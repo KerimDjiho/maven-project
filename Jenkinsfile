@@ -2,7 +2,7 @@ pipeline {
 	/* A declarative Pipeline */
 	agent any
 	tools {
-		maven 'M3'
+		maven 'localMaven'
 	}
 
 	stages {
