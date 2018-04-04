@@ -31,12 +31,12 @@ pipeline {
 			parallel{
 				stage('Deploy to Staging'){
 					steps{
-						sh "cp -i **/target/*.war /Users/kerimdjiho/Documents/Workshop/apache-tomcat-8.5.29-staging/webapps -y"
+						sh "yes | cp **/target/*.war /Users/kerimdjiho/Documents/Workshop/apache-tomcat-8.5.29-staging/webapps -y"
 					}
 				}
 				stage('Deploy to Prod'){
 					steps{
-						sh "cp -i **/target/*.war /Users/kerimdjiho/Documents/Workshop/apache-tomcat-8.5.29-prod/webapps -y"
+						sh "yes | cp **/target/*.war /Users/kerimdjiho/Documents/Workshop/apache-tomcat-8.5.29-prod/webapps -y"
 					}
 				}
 			}
