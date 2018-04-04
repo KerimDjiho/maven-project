@@ -5,42 +5,41 @@ pipeline {
 		maven 'localMaven'
 	}
 
-	stages {
-		stage('Build'){
+	parameters{
+		string (name: 'staging-tomcat', defaultValue: '172.0.0.1:8090', description: 'Staging server')
+		string (name: 'prod-tomcat', defaultValue: '172.0.0.1:9080', description: 'Production server')
+	}
 
-			steps {
+	triggers {
+		pollSCM('* * * * *')
+	}
+
+	stages{
+		stage('Build'){
+			steps{
 				sh 'mvn clean package'
 			}
 			post {
-				success {
-					echo 'Now Archiving...'
+				success{
+					echo 'Now Archiving'
 					archiveArtifacts artifacts: '**/target/*.war'
 				}
 			}
 		}
-		stage ('Deploy to Staging'){
-			steps {
-				build job: 'deploy-to-staging'
-			}
-		}
-		stage ('Deploy to Production'){
-			steps{
-				timeout(time:5, unit:'DAYS'){
-					input message: 'Approve PRODUCTION Deployment?'
-				}
 
-				build job: 'deploy-to-prod'
-			}
-			post{
-				success {
-					echo 'Code deployed to Production'
+		stage('Deployments'){
+			parallel{
+				stage('Deploy to Staging'){
+					steps{
+						sh "cp -i **/target/*.war ${params.staging-tomcat}:/users/kerimdjiho/Documents/Workshop/apache-tomcat-8.5.29-staging/webapps"
+					}
 				}
-
-				failure{
-					echo 'Deployment failed :('
+				stage('Deploy to Prod'){
+					steps{
+						sh "cp -i **/target/*.war ${params.prod-tomcat}:/users/kerimdjiho/Documents/Workshop/apache-tomcat-8.5.29-prod/webapps"
+					}
 				}
 			}
 		}
 	}
-
 }
