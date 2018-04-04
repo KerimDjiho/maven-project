@@ -6,8 +6,8 @@ pipeline {
 	}
 
 	parameters{
-		string (name: 'staging-tomcat', defaultValue: 'localhost:8090', description: 'Staging server')
-		string (name: 'prod-tomcat', defaultValue: 'localhost:9080', description: 'Production server')
+		string (name: 'staging-tomcat', defaultValue: 'localhost', description: 'Staging server')
+		string (name: 'prod-tomcat', defaultValue: 'localhost', description: 'Production server')
 	}
 
 	triggers {
@@ -31,12 +31,12 @@ pipeline {
 			parallel{
 				stage('Deploy to Staging'){
 					steps{
-						sh "cp **/target/*.war ${params.staging-tomcat}:Users/kerimdjiho/Documents/Workshop/apache-tomcat-8.5.29-staging/webapps"
+						sh "cp -i **/target/*.war ${params.staging-tomcat}/Users/kerimdjiho/Documents/Workshop/apache-tomcat-8.5.29-staging/webapps"
 					}
 				}
 				stage('Deploy to Prod'){
 					steps{
-						sh "cp **/target/*.war ${params.prod-tomcat}:/Users/kerimdjiho/Documents/Workshop/apache-tomcat-8.5.29-prod/webapps"
+						sh "cp -i **/target/*.war ${params.prod-tomcat}/Users/kerimdjiho/Documents/Workshop/apache-tomcat-8.5.29-prod/webapps"
 					}
 				}
 			}
